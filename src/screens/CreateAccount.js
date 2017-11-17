@@ -33,7 +33,6 @@ class CreateAccount extends Component {
 
   render() {
     const { accountName, username, password, loginUrl } = this.state;
-
     return (
       <Container>
         <Content>

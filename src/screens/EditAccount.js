@@ -15,10 +15,19 @@ import {
 } from "native-base";
 
 export default class EditAccount extends Component {
-  state = {};
-  render() {
+  state = {
+    authenticated: false
+  };
+  componentDidMount() {
     const { account } = this.props.navigation.state.params;
     const { accountName, username, password, loginUrl, id, icon } = account;
+    this.setState({
+      accountName, username, password, loginUrl, id, icon
+    })
+  }
+  render() {
+    
+    const { accountName, username, password, loginUrl, id, icon } = this.state;
     return (
       <Container>
         <Content>
