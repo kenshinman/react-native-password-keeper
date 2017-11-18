@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import FingerprintScanner from 'react-native-fingerprint-scanner';
-import FingerprintPopup from '../components/FingerPrintPopup'
+import { View, Text, StyleSheet, AsyncStorage } from "react-native";
+import PinInput from 'react-native-pin-input'
 import {
   Container,
   Content,
@@ -20,12 +19,24 @@ class ViewAccount extends Component {
     super(props);
     this.state = {
       authenticated: false,
-      scanner: true
+      scanner: false,
+      savedPin: ''
     };
   }
+
   componentWillMount() {
+    AsyncStorage.getItem('pin').then((pin) => {
+      if (pin) {
+        this.setState({savedPin: JSON.parse(pin)})
+      } else {
+        alert('no pin')
+      }
+    })
+  }
+  componentDillMount() {
     FingerprintScanner
       .isSensorAvailable()
+      .then(() => this.setState({ scanner: true }))
       .catch(error => this.setState({ scanner: false }));
   }
 
@@ -75,10 +86,24 @@ class ViewAccount extends Component {
               <Icon name="trash" />
             </Fab>
           </Card>
-
           :
           <View style={styles.auth}>
             <Text>Not Authenticated</Text>
+            <Text>Please Enter your pin to view or edit this account</Text>
+            <PinInput
+              ref={"pin"}
+              pinLength={4}
+              autoFocus={true}
+              pinItemStyle={{ width: 50, height: 50 }}
+              pinItemProps={{ keyboardType: 'number-pad' }}
+              onPinCompleted={(pin) => {
+                if(pin == this.state.savedPin){
+                  this.setState({ authenticated: true })
+                }else{
+                  alert('PIN is incorrect. \n Please check and try again')
+                }
+              }}
+            />
             <Text>{this.state.errorMessage}</Text>
             {this.state.scanner ? <FingerprintPopup handlePopupDismissed={this.handlePopupDismissed()} /> : null}
           </View>

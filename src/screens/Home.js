@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { ScrollView, TouchableOpacity, StyleSheet, View, AsyncStorage, ToastAndroid, Platform } from "react-native";
+import PinInput from 'react-native-pin-input'
 import {
   Container,
   Content,
@@ -12,7 +13,9 @@ import {
   CardItem,
   Icon,
   Fab,
-  Separator
+  Separator,
+  Button,
+  Toast
 } from "native-base";
 
 const list = [
@@ -51,12 +54,60 @@ const list = [
 ];
 
 export default class Home extends Component {
-  handleFabPress() {
-    alert("Hola");
+  constructor(props) {
+    super(props);
+    // AsyncStorage.removeItem('accounts')
+    this.state = {
+      pin1: '',
+      pin2: '',
+      pinIsSet: false,
+      disabled: true,
+      showToast: false,
+      accounts: []
+    }
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('accounts', (err, res)=>{
+      if(!err){
+        if(res == null){
+          AsyncStorage.setItem('accounts', JSON.stringify([]), (err) => {
+            if(!err){
+              this.setState({accounts: []})
+              console.log('no err')
+            }else{
+              console.log(err)
+            }
+          })
+        }else{
+          this.setState({accounts: JSON.parse(res)})
+        }
+      }else{
+        console.log(err)
+      }
+    })
+
+    AsyncStorage.getItem('pin').then(pin => {
+      if (pin) {
+        this.setState({ pinIsSet: true })
+      }
+    })
+  }
+
+  savePin() {
+    if (this.state.pin1.length === 4) {
+      this.setState({ disabled: false })
+      if (this.state.pin1 === this.state.pin2) {
+        AsyncStorage.setItem('pin', JSON.stringify(this.state.pin1));
+        this.setState({ pinIsSet: true })
+      } else {
+        alert('PINs do not match \n please try again')
+      }
+    }
   }
 
   renderList() {
-    return list.map(account => {
+    return this.state.accounts.map(account => {
       return (
         <TouchableOpacity
           key={account.id}
@@ -67,7 +118,7 @@ export default class Home extends Component {
         >
           <CardItem style={styles.listItem}>
             <Left>
-              <Icon active name={`logo-${account.icon}`} />
+              <Icon active name="lock" />
             </Left>
             <Body style={{ flex: 4 }}>
               <Text style={styles.nameText}>
@@ -79,7 +130,7 @@ export default class Home extends Component {
               <Icon name="arrow-forward" />
             </Right>
           </CardItem>
-          <Separator style={{height: 1}}/>
+          <Separator style={{ height: 1 }} />
         </TouchableOpacity>
       );
     });
@@ -88,16 +139,53 @@ export default class Home extends Component {
     const { navigation } = this.props;
     return (
       <Container>
-        <Content>
-          <Card>{this.renderList()}</Card>
-        </Content>
-        <Fab
-          style={{ backgroundColor: "#2ecc71" }}
-          position="bottomRight"
-          onPress={() => navigation.navigate("CreateAccount")}
-        >
-          <Icon name="add" />
-        </Fab>
+        {this.state.pinIsSet ?
+          <View style={styles.main}>
+            <Content>
+              {this.state.accounts.length > 0 ?
+              <Card>{this.renderList()}</Card> :
+              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Text>You don't have any accounts saved</Text>
+              </View>
+              }
+            </Content>
+            <Fab
+              style={{ backgroundColor: "#000000" }}
+              position="bottomRight"
+              onPress={() => navigation.navigate("CreateAccount")}
+            >
+              <Icon name="add" color="#fff" />
+            </Fab>
+          </View>
+          : <View style={styles.container}>
+            <View>
+              <Text style={{ textAlign: 'center' }}>Please set up your PIN</Text>
+              <PinInput
+                ref={"pin1"}
+                autoFocus={true}
+                pinItemStyle={{ width: 50, height: 50 }}
+                pinItemProps={{ keyboardType: 'number-pad' }}
+                onPinCompleted={(pin) => {
+                  this.setState({ pin1: pin, disabled: false })
+                }}
+              />
+              <Text style={{ textAlign: 'center' }}>Confirm your PIN</Text>
+              <PinInput
+                ref={"pin2"}
+                pinLength={4}
+                autoFocus={false}
+                pinItemStyle={{ width: 50, height: 50 }}
+                pinItemProps={{ keyboardType: 'number-pad' }}
+                onPinCompleted={(pin) => {
+                  this.setState({ pin2: pin })
+                }}
+              />
+              <Button disabled={this.state.disabled} style={styles.btn} dark block onPress={() => this.savePin()}>
+                <Text>Save PIN</Text>
+              </Button>
+            </View>
+          </View>
+        }
       </Container>
     );
   }
@@ -105,7 +193,7 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   nameText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold"
   },
   subText: {
@@ -114,7 +202,18 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   listItem: {
-    borderColor: "#222",
-    borderBottomWidth: 2
+    // borderColor: "#222",
+    // borderBottomWidth: 2
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  main: {
+    flex: 1
+  },
+  btn: {
+    marginTop: 20
   }
 });
