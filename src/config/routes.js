@@ -10,6 +10,7 @@ import Home from "../screens/Home";
 import ViewAccount from "../screens/ViewAccount";
 import CreateAccount from "../screens/CreateAccount";
 import EditAccount from "../screens/EditAccount";
+import Settings from "../screens/Settings";
 
 const os = Platform.OS === "ios" ? "ios" : "md";
 
@@ -21,7 +22,11 @@ const RootNavigator = StackNavigator(
         headerTitle: "Password Keeper",
         headerRight: (
           <View style={styles.rightIcon}>
-            <TouchableOpacity>
+            <TouchableOpacity 
+              onPress={()=>{
+                navigation.navigate('Settings')
+              }}
+            >
               <Icon name="options" />
             </TouchableOpacity>
           </View>
@@ -53,20 +58,13 @@ const RootNavigator = StackNavigator(
       navigationOptions: ({ navigation }) => ({
         headerTitle: "Edit Account"
       })
+    },
+    Settings: {
+      screen: Settings,
+      navigationOptions: ({ navigation }) => ({
+        headerTitle: "Settings"
+      })
     }
-    // About: {
-    //   screen: About,
-    //   title: "About LIWC",
-    //   navigationOptions: ({ navigation }) => ({
-    //     headerTitle: "ABOUT LIWC 2017"
-    //   })
-    // },
-    //  Minister: {
-    //   screen: Minister,
-    //   navigationOptions: ({ navigation }) => ({
-    //     headerTitle: `${navigation.state.params.minister.name}`
-    //   })
-    // },
   },
   {
     headerMode: "screen"
