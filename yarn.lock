@@ -3526,6 +3526,10 @@ react-native-pin-input@^1.2.8:
   dependencies:
     immutable "^3.8.1"
 
+react-native-smart-splash-screen@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/react-native-smart-splash-screen/-/react-native-smart-splash-screen-2.3.5.tgz#68a1e45bfd708678aa12e65f2ba997ac5c1292a0"
+
 "react-native-swiper@git+https://github.com/FuYaoDe/react-native-swiper.git":
   version "1.4.4"
   resolved "git+https://github.com/FuYaoDe/react-native-swiper.git#a6417ff41a8b2d490bdcc4541015ab35736d4595"

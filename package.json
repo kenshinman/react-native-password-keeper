@@ -13,6 +13,7 @@
 		"react-native-app-intro": "^1.1.5",
 		"react-native-easy-toast": "^1.0.9",
 		"react-native-pin-input": "^1.2.8",
+		"react-native-smart-splash-screen": "^2.3.5",
 		"react-navigation": "^1.0.0-beta.13"
 	},
 	"devDependencies": {

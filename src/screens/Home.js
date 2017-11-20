@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { ScrollView, TouchableOpacity, StyleSheet, View, AsyncStorage, ToastAndroid, Platform } from "react-native";
-import PinInput from 'react-native-pin-input'
+import PinInput from 'react-native-pin-input';
+import SplashScreen from 'react-native-smart-splash-screen'
 import {
   Container,
   Content,
@@ -68,21 +69,26 @@ export default class Home extends Component {
   }
 
   componentWillMount() {
-    AsyncStorage.getItem('accounts', (err, res)=>{
-      if(!err){
-        if(res == null){
+    SplashScreen.close({
+      animationType: SplashScreen.animationType.scale,
+      duration: 850,
+      delay: 500,
+    })
+    AsyncStorage.getItem('accounts', (err, res) => {
+      if (!err) {
+        if (res == null) {
           AsyncStorage.setItem('accounts', JSON.stringify([]), (err) => {
-            if(!err){
-              this.setState({accounts: []})
+            if (!err) {
+              this.setState({ accounts: [] })
               console.log('no err')
-            }else{
+            } else {
               console.log(err)
             }
           })
-        }else{
-          this.setState({accounts: JSON.parse(res)})
+        } else {
+          this.setState({ accounts: JSON.parse(res) })
         }
-      }else{
+      } else {
         console.log(err)
       }
     })
@@ -143,10 +149,10 @@ export default class Home extends Component {
           <View style={styles.main}>
             <Content>
               {this.state.accounts.length > 0 ?
-              <Card>{this.renderList()}</Card> :
-              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text>You don't have any accounts saved</Text>
-              </View>
+                <Card>{this.renderList()}</Card> :
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                  <Text>You don't have any accounts saved</Text>
+                </View>
               }
             </Content>
             <Fab
