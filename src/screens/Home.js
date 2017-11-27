@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { ScrollView, TouchableOpacity, StyleSheet, View, AsyncStorage, ToastAndroid, Platform } from "react-native";
 import PinInput from 'react-native-pin-input';
+import {
+  AdMobBanner,
+  AdMobInterstitial,
+  PublisherBanner,
+  AdMobRewarded,
+} from 'react-native-admob'
 
 import {
   Container,
@@ -16,7 +22,8 @@ import {
   Fab,
   Separator,
   Button,
-  Toast
+  Toast,
+  Footer
 } from "native-base";
 
 const list = [
@@ -69,7 +76,7 @@ export default class Home extends Component {
   }
 
   componentWillMount() {
-    
+
     AsyncStorage.getItem('accounts', (err, res) => {
       if (!err) {
         if (res == null) {
@@ -150,9 +157,18 @@ export default class Home extends Component {
                   <Text>You don't have any accounts saved</Text>
                 </View>
               }
+
             </Content>
+            <Footer>
+              <AdMobBanner
+                adSize="banner"
+                adUnitID="ca-app-pub-3856758681891175/3313776941"
+                testDevices={['2dc7a4dd36fe3ca3']}
+                onAdFailedToLoad={error => console.error(error)}
+              />
+            </Footer>
             <Fab
-              style={{ backgroundColor: "#000000" }}
+              style={{ backgroundColor: "#000000", bottom: 60 }}
               position="bottomRight"
               onPress={() => navigation.navigate("CreateAccount")}
             >

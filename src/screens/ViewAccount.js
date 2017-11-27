@@ -130,7 +130,7 @@ class ViewAccount extends Component {
               pinLength={4}
               autoFocus={true}
               pinItemStyle={{ width: 50, height: 50 }}
-              pinItemProps={{ keyboardType: 'number-pad' }}
+              pinItemProps={{ keyboardType: 'number-pad', placeHolder: '*' }}
               onPinCompleted={(pin) => {
                 if (pin == this.state.savedPin) {
                   this.setState({ authenticated: true })
