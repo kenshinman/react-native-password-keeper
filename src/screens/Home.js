@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { ScrollView, TouchableOpacity, StyleSheet, View, AsyncStorage, ToastAndroid, Platform } from "react-native";
 import PinInput from 'react-native-pin-input';
-import SplashScreen from 'react-native-smart-splash-screen'
+
 import {
   Container,
   Content,
@@ -69,11 +69,7 @@ export default class Home extends Component {
   }
 
   componentWillMount() {
-    SplashScreen.close({
-      animationType: SplashScreen.animationType.scale,
-      duration: 850,
-      delay: 500,
-    })
+    
     AsyncStorage.getItem('accounts', (err, res) => {
       if (!err) {
         if (res == null) {
