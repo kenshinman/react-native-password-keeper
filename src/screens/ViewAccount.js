@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, AsyncStorage } from "react-native";
-import PinInput from 'react-native-pin-input'
+import { View, Text, StyleSheet, AsyncStorage, Alert } from "react-native";
+import PinInput from 'react-native-pin-input';
+import { NavigationActions } from 'react-navigation'
 import {
   Container,
   Content,
@@ -18,6 +19,7 @@ class ViewAccount extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      allAccounts: [],
       authenticated: false,
       scanner: false,
       savedPin: ''
@@ -27,12 +29,45 @@ class ViewAccount extends Component {
   componentWillMount() {
     AsyncStorage.getItem('pin').then((pin) => {
       if (pin) {
-        this.setState({savedPin: JSON.parse(pin)})
+        this.setState({ savedPin: JSON.parse(pin) })
       } else {
         alert('no pin')
       }
     })
+
+    AsyncStorage.getItem('accounts').then(accounts => {
+      this.setState({ allAccounts: JSON.parse(accounts) })
+    });
   }
+
+  doDelete(id) {
+    let deleted = this.state.allAccounts.filter((account) => {
+      return account.id !== id;
+    })
+
+    AsyncStorage.setItem('accounts', JSON.stringify(deleted), () => {
+      const resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Home' })
+        ]
+      })
+      this.props.navigation.dispatch(resetAction)
+    })
+  }
+
+  deleteAccount(id) {
+    Alert.alert(
+      'Delete Account?',
+      'Are you sure you wans to delete account',
+      [
+        { text: 'Yes', onPress: () => this.doDelete(id) },
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' }
+      ],
+      { cancelable: true }
+    )
+  }
+
   componentDillMount() {
     FingerprintScanner
       .isSensorAvailable()
@@ -81,7 +116,7 @@ class ViewAccount extends Component {
             <Fab
               style={{ backgroundColor: "red" }}
               position="bottomLeft"
-              onPress={() => alert("CreateAccount")}
+              onPress={() => this.deleteAccount(id)}
             >
               <Icon name="trash" />
             </Fab>
@@ -97,9 +132,9 @@ class ViewAccount extends Component {
               pinItemStyle={{ width: 50, height: 50 }}
               pinItemProps={{ keyboardType: 'number-pad' }}
               onPinCompleted={(pin) => {
-                if(pin == this.state.savedPin){
+                if (pin == this.state.savedPin) {
                   this.setState({ authenticated: true })
-                }else{
+                } else {
                   alert('PIN is incorrect. \n Please check and try again')
                 }
               }}

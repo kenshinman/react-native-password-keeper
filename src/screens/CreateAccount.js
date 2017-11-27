@@ -80,7 +80,7 @@ class CreateAccount extends Component {
                   onChangeText={text => this.setState({ accountName: text })}
                   ref="accountName"
                   value={this.state.accountName}
-                  
+                  autoFocus={true}
                 />
               </Item>
               <Text style={styles.meta}>e.g. Facebook</Text>
