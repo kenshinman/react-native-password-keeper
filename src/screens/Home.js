@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { ScrollView, TouchableOpacity, StyleSheet, View, AsyncStorage, ToastAndroid, Platform } from "react-native";
 import PinInput from 'react-native-pin-input';
-import {
-  AdMobBanner,
-  AdMobInterstitial,
-  PublisherBanner,
-  AdMobRewarded,
-} from 'react-native-admob'
+import FooterAd from '../components/FooterAd'
+
 
 import {
   Container,
@@ -159,14 +155,7 @@ export default class Home extends Component {
               }
 
             </Content>
-            <Footer>
-              <AdMobBanner
-                adSize="banner"
-                adUnitID="ca-app-pub-3856758681891175/3313776941"
-                testDevices={['2dc7a4dd36fe3ca3']}
-                onAdFailedToLoad={error => console.error(error)}
-              />
-            </Footer>
+            <FooterAd adId='ca-app-pub-3856758681891175/4201027796' />
             <Fab
               style={{ backgroundColor: "#000000", bottom: 60 }}
               position="bottomRight"

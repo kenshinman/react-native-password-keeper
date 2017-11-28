@@ -15,6 +15,8 @@ import {
   Label
 } from "native-base";
 
+import FooterAd from '../components/FooterAd';
+
 class ViewAccount extends Component {
   constructor(props) {
     super(props);
@@ -105,8 +107,9 @@ class ViewAccount extends Component {
                 </Item>
               </Form>
             </Content>
+            <FooterAd adId='ca-app-pub-3856758681891175/2173753969' />
             <Fab
-              style={{ backgroundColor: "orange" }}
+              style={{ backgroundColor: "orange", bottom: 60 }}
               position="bottomRight"
               onPress={() =>
                 this.props.navigation.navigate("EditAccount", { account })}
@@ -114,7 +117,7 @@ class ViewAccount extends Component {
               <Icon name="create" />
             </Fab>
             <Fab
-              style={{ backgroundColor: "red" }}
+              style={{ backgroundColor: "red", bottom: 60 }}
               position="bottomLeft"
               onPress={() => this.deleteAccount(id)}
             >
@@ -160,6 +163,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1
+  },
+  fab: {
+    bottom: 60
   }
 })
 
